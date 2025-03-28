@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #8360c3, #2ebf91);
+    color: #fff;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+form {
+    background: rgba(154, 100, 100, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(18, 17, 17, 0.1);
+    display: inline-block;
+}
+
+input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+input[type="submit"], button {
+    background: #ff9800;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="submit"]:hover, button:hover {
+    background: #f57c00;
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #ff9800;
+    color: white;
+}
+
+td {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+
+button {
+    background: #e74c3c;
+}
+
+button:hover {
+    background: #c0392b;
+}
+
+@media (max-width: 768px) {
+    table, th, td {
+        display: block;
+        width: 100%;
+    }
+}
+    </style>
+    <head>
+        <title>homepage</title>
+        <link rel="stylesheet" href="{{ url_for('static', path='css/main.css') }}">
+    </head>
+    <body>
+        <center>
+        <div>
+            <form id="createForm" method="post" action="javascript:submitForm('createForm', 'POST', '/blog')">
+                <label for="title">TASK</label>
+                <input type="text" name="title" id="title" required><br><br>
+                <label for="body">STATUS</label>
+                <input type="text" name="body" id="body" required><br><br>
+                <input class="update" type="submit" name="submit" value="submit">
+            </form>
+        </div>
+        <div >
+        <div >
+                <table method="get">
+                    <tr>
+                        <th>ID</th>
+                        <th>TASK</th>
+                        <th>STATUS</th>
+                        <th>UPDATE</th>
+                    </tr>
+                    {% for blog in blogs %}
+                    <tr>
+                        <td>{{blog.id}}</td>
+                        <td>{{blog.title}}</td>
+                        <td>{{blog.body}}</td>
+                        <td>
+                            <form id="updateForm{{ blog.id }}" method="post" action="javascript:submitForm('updateForm{{ blog.id }}', 'PUT', '/blog/{{ blog.id }}')">
+                                <input type="text" name="title" value="{{ blog.title }}" required><br>
+                                <input type="text" name="body" value="{{ blog.body }}" required><br>
+                                <input class="update" type="submit" value="Update">
+                                <button onclick="deleteBlog({{blog.id}})">Delete</button>
+                            </form>
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+        </div>
+    </center>
+    <script>
+        function deleteBlog(id) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", `/blog/${id}`, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 204) {
+                    window.location.href = "/blog";
+                }
+            };
+            xhr.send(null);
+        }
+        function submitForm(formId, method, url) {
+            var form = document.getElementById(formId);
+            var formData = new FormData(form);
+            var xhr = new XMLHttpRequest();
+            xhr.open(method, url, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 303) {
+                        window.location.href = xhr.getResponseHeader('Location');
+                    } else if (xhr.status === 202 || xhr.status === 201) {
+                        window.location.reload(); 
+                    }
+                }
+            };
+            xhr.send(formData);
+        }
+    </script>   
+    </body>
+</html>

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-list
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: todo-list
+  template:
+    metadata:
+      labels:
+        app: todo-list
+    spec:
+      containers:
+        - name: todo-list
+          image: tharunrajr/todo-list-fastapi:v1
+          resources:
+            requests:
+              cpu: "50m"
+            limits:
+              cpu: "200m"
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: todo-config
+            - secretRef:
+                name: todo-secret
+          volumeMounts:
+            - mountPath: /app/data   
+              name: todo-list-storage  
+      volumes:
+        - name: todo-list-storage   
+          persistentVolumeClaim:
+            claimName: todo-list-pvc   

@@ -1,0 +1,23 @@
+body{
+    font-size: x-large;
+    background-color: rgb(33, 10, 48);
+    color: rgb(108, 187, 189);
+}
+input{
+    background-color:aliceblue;
+}
+.update
+{   
+    background-color: green;
+}
+button
+{
+    background-color: rgb(222, 29, 15);
+}
+table
+{
+    border: 1px solid white ;
+}
+tr,td,th{
+    border:1px solid white ;
+}

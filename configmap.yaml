@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-config
+data:
+  DATABASE_URL: "postgres://user:password@postgres:5432/todo_db"
+  APP_ENV: "production"
